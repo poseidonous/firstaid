@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Aid</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        body {
+            background-color: #001B26;
+            color: #FFFFFF;
+            font-family: 'Fira Sans', sans-serif;
+        }
+        .navbar {
+            background-color: #001B26;
+            box-shadow: 0px 0px 16px 1px #00FFFF50;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        .navbar a, .titlebar a {
+            color: #FFFFFF;
+        }
+        .split-container {
+            display: flex;
+            height: calc(100vh - 56px); /* Adjust according to navbar height */
+            margin-top: 56px; /* Height of the navbar */
+        }  
+        .left-container, .right-container {
+            width: 50%;
+            background-color: #0d2833;
+            overflow-y: auto;
+            height: 100%;
+        }
+        #details-page {
+            padding: 0 20px;
+        }
+        #details-page li {
+            padding: 4px;
+        }
+        .img-fluid {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 100%;
+            height: auto;
+        }
+        .infobar {
+            color: #00FFFF;
+            margin-bottom: 10px;
+        }
+        .page {
+            display: none;
+            height: 100%;
+            padding: 10px;
+        }
+        .home-page {
+            display: block; /* Home page always visible */
+            background-color: #001B26;
+        }
+        .search-container {
+            width: 100%;
+            padding: 20px;
+        }
+        .search-bar {
+            width: 100%;
+            margin: 20px 0;
+            padding: 10px;
+        }
+        .search-result {
+            margin: 20px;
+            color: #FFFFFF;
+        }
+        .search-result a {
+            color: #FFFFFF;
+        }
+
+        @media (max-width: 768px) {
+            .split-container {
+                display: block;
+            }
+            .left-container, .right-container {
+                width: 100%;
+            }
+            .page {
+                min-height: 100vh;
+            }
+        }
+        .fa-container {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #005577;
+        }
+
+        .symptoms-container, .measures-container{
+          padding: 15px 0;
+        }
+        .filter-container {
+            margin-bottom: 10px;
+        }
+        .filter-option {
+            display: inline-block;
+            border: 1px solid #00FFFF;
+            color: #FFFFFF;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .filter-option.selected {
+            background-color: #00FFFF;
+            color: #001B26;
+        }
+        .filter-button {
+            padding: 10px;
+            width: 25%;
+            background-color: #00ffff;
+            border-radius: 8px;
+            margin: 20px;
+        }
+        .settings-container {
+            margin: 20px 0;
+            border-bottom: 1px solid #00ffff;
+        }
+        .reset-button {
+            padding: 10px;
+            width: 25%;
+            border: 1px solid #00ffff;
+            border-radius: 8px;
+            margin: 20px;
+            color: #FFFFFF;
+            background-color: #005577;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#" onclick="showPage('home')">
+          <img src="Assets/firstaid/first-aid.svg" alt="First-aid Icon" width="24" height="24" class="mr-2">
+          First Aid
+        </a>
+        <div class="ml-auto">
+          <a href="#" class="navbar-text" onclick="showPage('search')">
+            <img src="Assets/firstaid/search.svg" alt="Search" width="20" height="20">
+          </a>
+          <a href="#" class="navbar-text ml-3" onclick="showPage('settings')">
+            <img src="Assets/firstaid/settings.svg" alt="Settings" width="20" height="20">
+          </a>
+        </div>
+      </nav>
+      
+    <div class="split-container">
+        <div class="left-container home-page page" id="home-page">
+            <div id="first-aid-list">
+                <!-- List of first aid items will be dynamically loaded here -->
+            </div>
+        </div>
+        <div class="right-container" id="content-page">
+            <div class="settings-page page" id="settings-page">
+               <div class="settings-container">
+                  <!-- Settings page content -->
+                  <h3>Filter Categories</h3>
+                  <div class="filter-container">
+                      <!-- Categories will be dynamically loaded here -->
+                  </div>
+                  <button class="reset-button">Reset</button>
+                  <button class="filter-button">Save</button>
+               </div> 
+            </div>
+            <div class="search-page page" id="search-page">
+                <!-- Search page content -->
+                <div class="search-container">
+                    <h3>Search</h3>
+                    <input type="text" id="search-input" class="search-bar" placeholder="Type to search...">
+                    <div id="search-results">
+                        <!-- Search results will be displayed here -->
+                    </div>
+                </div>
+            </div>
+            <div class="details-page page" id="details-page">
+                <!-- Details page content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="firstAid.js"></script>
+    <script>
+        // Your existing JavaScript code remains unchanged
+        function showPage(page) {
+        const pages = ['home', 'settings', 'search', 'details'];
+        pages.forEach(p => {
+            document.getElementById(`${p}-page`).style.display = 'none';
+        });
+        document.getElementById(`${page}-page`).style.display = 'block';
+
+        if (page !== 'home' && window.innerWidth <= 768) {
+            document.querySelector('.left-container').style.display = 'none';
+            document.querySelector('.right-container').style.width = '100%';
+        } else {
+            document.querySelector('.left-container').style.display = 'block';
+            document.querySelector('.right-container').style.width = '50%';
+        }
+    }
+
+    function setDefaultPage() {
+        if (window.innerWidth > 768) {
+            // Desktop view: show settings page by default
+            showPage('settings');
+        } else {
+            // Mobile view: show home page (first aid list) by default
+            showPage('home');
+        }
+    }
+     document.addEventListener('DOMContentLoaded', function () {
+        // Load first aid items into the home page
+        const firstAidList = document.getElementById('first-aid-list');
+        firstAidData.forEach((item, index) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'fa-container';
+            itemDiv.innerHTML = `
+                <div class="infobar row">
+                    <div class="col text-left">${item.name}</div>
+                    <div class="col text-center">${item.category}</div>
+                </div>
+                <div class="titlebar">
+                    <a href="#" onclick="showDetails(${index})">${item.title}</a>
+                </div>
+            `;
+            firstAidList.appendChild(itemDiv);
+        });
+
+        // Load filter options with 'selected' class by default
+        const filterContainer = document.querySelector('.filter-container');
+        const categories = Array.from(new Set(firstAidData.map(item => item.category)));
+        categories.forEach(category => {
+            const span = document.createElement('span');
+            span.innerText = category;
+            span.classList.add('filter-option', 'selected');
+            span.addEventListener('click', function () {
+                span.classList.toggle('selected');
+            });
+            filterContainer.appendChild(span);
+        });
+
+        // Filter and reset buttons
+        document.querySelector('.filter-button').addEventListener('click', applyFilters);
+        document.querySelector('.reset-button').addEventListener('click', resetFilters);
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        searchInput.addEventListener('input', function () {
+            const query = searchInput.value.toLowerCase();
+            searchResults.innerHTML = '';
+
+            if (query.trim() !== '') {
+                const results = firstAidData.filter(item => {
+                    return item.name.toLowerCase().includes(query) ||
+                           item.category.toLowerCase().includes(query) ||
+                           item.title.toLowerCase().includes(query) ||
+                           item.symptoms.some(symptom => symptom.toLowerCase().includes(query)) ||
+                           item.measures.some(measure => measure.toLowerCase().includes(query));
+                });
+
+                results.forEach(item => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'search-result';
+                    resultDiv.innerHTML = `<a href="#" onclick="showDetails(${firstAidData.indexOf(item)})">${item.name}</a>`;
+                    searchResults.appendChild(resultDiv);
+                });
+
+                if (results.length === 0) {
+                    searchResults.innerHTML = '<p>No matches found.</p>';
+                }
+            }
+        });
+
+        // Initially mark all filters as selected and apply filters
+        resetFilters();
+
+        // Set default page based on screen size
+        setDefaultPage();
+    });
+
+        function showDetails(id) {
+            const detailsContainer = document.getElementById('details-page');
+            const firstAidItem = firstAidData[id];
+            if (firstAidItem) {
+                detailsContainer.innerHTML = `
+                    <div class="fa-container mb-4">
+                        <div class="infobar row">
+                            <div class="col text-left">${firstAidItem.name}</div>
+                            <div class="col text-center">${firstAidItem.category}</div>
+                        </div>
+                        <div class="titlebar">
+                            ${firstAidItem.title}
+                        </div>
+                    </div>
+                    <img src="${firstAidItem.image}" alt="${firstAidItem.name}" class="img-fluid mb-4">
+                    <div class="symptoms-container">
+                        <h3>Symptoms</h3>
+                        <ul>
+                          ${firstAidItem.symptoms.map(symptom => `<li>${symptom}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="measures-container">
+                        <h3>First Aid Measures</h3>
+                        <ol>
+                            ${firstAidItem.measures.map(measure => `<li>${measure}</li>`).join('')}
+                        </ol>
+                    </div>
+                `;
+                showPage('details');
+            }
+        }
+
+        function applyFilters() {
+            const selectedCategories = Array.from(document.querySelectorAll('.filter-container span.selected')).map(span => span.innerText);
+            const filteredData = selectedCategories.length > 0 ? firstAidData.filter(item => selectedCategories.includes(item.category)) : firstAidData;
+            const firstAidList = document.getElementById('first-aid-list');
+            firstAidList.innerHTML = '';
+            filteredData.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'fa-container';
+                itemDiv.innerHTML = `
+                    <div class="infobar row">
+                        <div class="col text-left">${item.name}</div>
+                        <div class="col text-center">${item.category}</div>
+                    </div>
+                    <div class="titlebar">
+                        <a href="#" onclick="showDetails(${index})">${item.title}</a>
+                    </div>
+                `;
+                firstAidList.appendChild(itemDiv);
+            });
+            showPage('home');
+        }
+
+        function resetFilters() {
+            const filterOptions = document.querySelectorAll('.filter-container .filter-option');
+            filterOptions.forEach(option => option.classList.add('selected'));
+            applyFilters();
+        }
+        window.addEventListener('resize', setDefaultPage);
+        
+    </script>
+</body>
+</html>
